@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/doctors', require('./src/routes/doctors'));
+app.use('/api/appointments', require('./src/routes/appointments'));
 app.use('/api/auth', require('./src/routes/auth'));
 
 // Health check
