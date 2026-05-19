@@ -2,6 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 
+const connectDB = require('./src/config/db');
+
+// Connect to MongoDB
+connectDB();
+
 const app = express();
 
 app.get('/api/health', (req, res) => {
