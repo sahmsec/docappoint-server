@@ -1,5 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
+const helmet = require('helmet');
 dotenv.config();
 
 const connectDB = require('./src/config/db');
@@ -8,6 +10,10 @@ const connectDB = require('./src/config/db');
 connectDB();
 
 const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors());
 
 // Body parser
 app.use(express.json());
