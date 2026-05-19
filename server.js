@@ -9,6 +9,13 @@ connectDB();
 
 const app = express();
 
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/auth', require('./src/routes/auth'));
+
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'DocAppoint API is running' });
 });
