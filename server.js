@@ -7,6 +7,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const connectDB = require('./src/config/db');
+const auth = require('./src/config/auth');
+const { toNodeHandler } = require('better-auth/node');
 
 // Connect to MongoDB
 connectDB();
@@ -59,6 +61,7 @@ app.use('/api/auth/google', authLimiter);
 app.use('/api/doctors', require('./src/routes/doctors'));
 app.use('/api/appointments', require('./src/routes/appointments'));
 app.use('/api/auth', require('./src/routes/auth'));
+app.all('/api/auth/*', toNodeHandler(auth));
 
 // Health check
 app.get('/api/health', (req, res) => {
