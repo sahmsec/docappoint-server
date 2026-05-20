@@ -6,7 +6,7 @@ const buildAllowedOrigins = require("./allowedOrigins");
 const client = new MongoClient(process.env.MONGODB_URI);
 
 const db = client.db();
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV?.trim() === "production";
 const trustedOrigins = buildAllowedOrigins();
 
 const auth = betterAuth({
