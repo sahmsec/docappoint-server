@@ -8,6 +8,7 @@ dotenv.config();
 
 const connectDB = require('./src/config/db');
 const auth = require('./src/config/auth');
+const buildAllowedOrigins = require('./src/config/allowedOrigins');
 const { toNodeHandler } = require('better-auth/node');
 
 // Connect to MongoDB
@@ -24,19 +25,12 @@ app.use(helmet());
 // Rate limiting for auth routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // limit each IP to 20 requests per windowMs
+  max: 50,
   message: 'Too many auth attempts, please try again later'
 });
 
 // CORS configuration
-const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:3000',
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:3002',
-  'http://localhost:3003',
-  'http://localhost:3004'
-];
+const allowedOrigins = buildAllowedOrigins();
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -55,21 +49,15 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Apply rate limiting to auth routes
-app.use('/api/auth/login', authLimiter);
-app.use('/api/auth/register', authLimiter);
-app.use('/api/auth/google', authLimiter);
+// Apply rate limiting to Better Auth routes
+app.use('/api/auth', authLimiter);
 
 // Routes
 app.use('/api/doctors', require('./src/routes/doctors'));
 app.use('/api/appointments', require('./src/routes/appointments'));
 
-// Better Auth handler MUST come before custom auth routes
-// so it can handle /api/auth/sign-in/social, /api/auth/callback/google, etc.
+// Better Auth owns the auth surface.
 app.all('/api/auth/*', toNodeHandler(auth));
-
-// Custom auth routes (legacy login/register/me)
-app.use('/api/auth', require('./src/routes/auth'));
 
 // Health check
 app.get('/api/health', (req, res) => {

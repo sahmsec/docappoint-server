@@ -1,14 +1,13 @@
 const { MongoClient } = require("mongodb");
-
 const { betterAuth } = require("better-auth");
-
-const {
-  mongodbAdapter,
-} = require("better-auth/adapters/mongodb");
+const { mongodbAdapter } = require("better-auth/adapters/mongodb");
+const buildAllowedOrigins = require("./allowedOrigins");
 
 const client = new MongoClient(process.env.MONGODB_URI);
 
 const db = client.db();
+const isProduction = process.env.NODE_ENV === "production";
+const trustedOrigins = buildAllowedOrigins();
 
 const auth = betterAuth({
   database: mongodbAdapter(db, {
@@ -18,21 +17,19 @@ const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
 
   baseURL:
-    process.env.SERVER_URL || "http://localhost:5000",
+    process.env.BETTER_AUTH_URL ||
+    process.env.SERVER_URL ||
+    "http://localhost:5000",
 
   basePath: "/api/auth",
 
-  trustedOrigins: [
-    process.env.CLIENT_URL || "http://localhost:3000",
-    "http://localhost:3000", 
-    "http://localhost:3001"
-  ],
+  trustedOrigins,
 
   advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production",
+    useSecureCookies: isProduction,
     defaultCookieAttributes: {
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
     },
   },
 

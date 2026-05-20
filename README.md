@@ -5,9 +5,8 @@ Express.js backend API for the DocAppoint doctor appointment booking system.
 ## Features
 
 - RESTful API for doctors and appointments
-- JWT-based authentication with secure middleware
+- Better Auth for email/password login, Google OAuth, and session cookies
 - MongoDB database with Mongoose ODM
-- Password hashing with bcryptjs
 - Rate limiting on auth routes
 - Helmet.js security headers
 - CORS configured for cross-origin requests
@@ -16,8 +15,7 @@ Express.js backend API for the DocAppoint doctor appointment booking system.
 
 - Express.js
 - MongoDB + Mongoose
-- JWT (jsonwebtoken)
-- bcryptjs
+- Better Auth
 - express-rate-limit
 - helmet
 - cors
@@ -44,11 +42,15 @@ Express.js backend API for the DocAppoint doctor appointment booking system.
 3. Configure your environment variables:
    ```env
    MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_random_secret_key_min_32_chars
+   BETTER_AUTH_SECRET=your_random_secret_key_min_32_chars
+   BETTER_AUTH_URL=http://localhost:5000
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
    SERVER_URL=http://localhost:5000
    CLIENT_URL=http://localhost:3000
+   CLIENT_URL_PREVIEW=
+   ADDITIONAL_TRUSTED_ORIGINS=
+   ALLOW_DOCTOR_SEED=true
    NODE_ENV=development
    ```
 
@@ -80,22 +82,15 @@ Express.js backend API for the DocAppoint doctor appointment booking system.
 | DELETE | `/api/appointments/:id` | Delete appointment |
 
 ### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login user |
-| GET | `/api/auth/me` | Get current user (JWT protected) |
-| PUT | `/api/auth/profile` | Update profile (JWT protected) |
-| POST | `/api/auth/google` | Google OAuth login/register |
+Better Auth owns the `/api/auth/*` routes, including email/password sign-in, sign-up, session, sign-out, and Google OAuth callback handling.
 
 ## Security
 
 - HTTP-only cookies for session management
-- JWT verification middleware on protected routes
+- Better Auth session validation on protected routes
 - Rate limiting on authentication endpoints
 - Helmet.js for security headers
 - CORS whitelist for client origin
-- Password hashing with bcryptjs (salt rounds: 10)
 - User-scoped queries — users can only access their own data
 
 ## Deployment
@@ -107,6 +102,20 @@ Recommended platform: **Render**
 3. Set environment variables in Render Dashboard
 4. Build Command: `npm install`
 5. Start Command: `npm start`
+
+Required production values:
+
+- `BETTER_AUTH_URL=https://your-render-service.onrender.com`
+- `SERVER_URL=https://your-render-service.onrender.com`
+- `CLIENT_URL=https://your-production-vercel-domain.vercel.app` or your custom frontend domain
+- `NODE_ENV=production`
+
+Google Cloud OAuth setup:
+
+- Authorized JavaScript origin: `https://your-production-vercel-domain.vercel.app`
+- Authorized redirect URI: `https://your-render-service.onrender.com/api/auth/callback/google`
+
+If you use a Vercel preview domain or an additional frontend domain, add it to `CLIENT_URL_PREVIEW` or `ADDITIONAL_TRUSTED_ORIGINS`.
 
 ## License
 

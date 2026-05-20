@@ -46,6 +46,16 @@ router.get('/:id', async (req, res) => {
 // Seed demo doctors (for initial setup)
 router.post('/seed', async (req, res) => {
   try {
+    if (
+      process.env.NODE_ENV === 'production' &&
+      process.env.ALLOW_DOCTOR_SEED !== 'true'
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Doctor seeding is disabled in production'
+      });
+    }
+
     const demoDoctors = [
       {
         name: 'Dr. Ayesha Rahman',

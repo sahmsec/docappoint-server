@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const jwtVerify = require('../middleware/jwtVerify');
+const authSession = require('../middleware/authSession');
 const Appointment = require('../models/Appointment');
 
 // GET all appointments for logged-in user (protected)
-router.get('/', jwtVerify, async (req, res) => {
+router.get('/', authSession, async (req, res) => {
   try {
     const appointments = await Appointment.find({ userEmail: req.user.email })
       .populate('doctorId', 'name specialty image hospital')
@@ -17,7 +17,7 @@ router.get('/', jwtVerify, async (req, res) => {
 });
 
 // POST create appointment (protected)
-router.post('/', jwtVerify, async (req, res) => {
+router.post('/', authSession, async (req, res) => {
   try {
     const { doctorId, doctorName, patientName, gender, phone, appointmentDate, appointmentTime } = req.body;
 
@@ -40,7 +40,7 @@ router.post('/', jwtVerify, async (req, res) => {
 });
 
 // PUT update appointment (protected) - user can only update their own, doctorName and userEmail are read-only
-router.put('/:id', jwtVerify, async (req, res) => {
+router.put('/:id', authSession, async (req, res) => {
   try {
     const appointment = await Appointment.findOne({ 
       _id: req.params.id, 
@@ -69,7 +69,7 @@ router.put('/:id', jwtVerify, async (req, res) => {
 });
 
 // DELETE appointment (protected)
-router.delete('/:id', jwtVerify, async (req, res) => {
+router.delete('/:id', authSession, async (req, res) => {
   try {
     const appointment = await Appointment.findOneAndDelete({ 
       _id: req.params.id, 
