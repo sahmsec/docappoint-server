@@ -20,7 +20,11 @@ const auth = betterAuth({
   baseURL:
     process.env.SERVER_URL || "http://localhost:5000",
 
-  trustedOrigins: ["http://localhost:3000", "http://localhost:3001"],
+  trustedOrigins: [
+    process.env.CLIENT_URL || "http://localhost:3000",
+    "http://localhost:3000", 
+    "http://localhost:3001"
+  ],
 
   emailAndPassword: {
     enabled: true,

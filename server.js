@@ -15,6 +15,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy (Required for Render and other load balancers for rate limiting and secure cookies)
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 
