@@ -63,8 +63,13 @@ app.use('/api/auth/google', authLimiter);
 // Routes
 app.use('/api/doctors', require('./src/routes/doctors'));
 app.use('/api/appointments', require('./src/routes/appointments'));
-app.use('/api/auth', require('./src/routes/auth'));
+
+// Better Auth handler MUST come before custom auth routes
+// so it can handle /api/auth/sign-in/social, /api/auth/callback/google, etc.
 app.all('/api/auth/*', toNodeHandler(auth));
+
+// Custom auth routes (legacy login/register/me)
+app.use('/api/auth', require('./src/routes/auth'));
 
 // Health check
 app.get('/api/health', (req, res) => {
