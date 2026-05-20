@@ -6,6 +6,9 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const configureDns = require('./src/config/dns');
+configureDns();
+
 const connectDB = require('./src/config/db');
 const auth = require('./src/config/auth');
 const buildAllowedOrigins = require('./src/config/allowedOrigins');

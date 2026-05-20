@@ -50,6 +50,7 @@ Express.js backend API for the DocAppoint doctor appointment booking system.
    CLIENT_URL=http://localhost:3000
    CLIENT_URL_PREVIEW=
    ADDITIONAL_TRUSTED_ORIGINS=
+   NODE_DNS_SERVERS=
    ALLOW_DOCTOR_SEED=true
    NODE_ENV=development
    ```
@@ -63,6 +64,8 @@ Express.js backend API for the DocAppoint doctor appointment booking system.
    ```bash
    curl -X POST http://localhost:5000/api/doctors/seed
    ```
+
+If MongoDB Atlas SRV resolution fails locally with `querySrv ECONNREFUSED`, set `NODE_DNS_SERVERS=8.8.8.8,1.1.1.1` or leave it empty in development to use the built-in local fallback.
 
 ## API Endpoints
 
