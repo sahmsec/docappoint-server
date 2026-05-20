@@ -20,11 +20,21 @@ const auth = betterAuth({
   baseURL:
     process.env.SERVER_URL || "http://localhost:5000",
 
+  basePath: "/api/auth",
+
   trustedOrigins: [
     process.env.CLIENT_URL || "http://localhost:3000",
     "http://localhost:3000", 
     "http://localhost:3001"
   ],
+
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production",
+    defaultCookieAttributes: {
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
+  },
 
   emailAndPassword: {
     enabled: true,
