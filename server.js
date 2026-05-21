@@ -58,6 +58,7 @@ app.use('/api/auth', authLimiter);
 // Routes
 app.use('/api/doctors', require('./src/routes/doctors'));
 app.use('/api/appointments', require('./src/routes/appointments'));
+app.use('/api/reviews', require('./src/routes/reviews'));
 
 // Better Auth owns the auth surface.
 app.all('/api/auth/*', toNodeHandler(auth));
