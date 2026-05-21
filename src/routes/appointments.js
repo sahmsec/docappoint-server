@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authSession = require('../middleware/authSession');
+const verifyJWT = require('../middleware/verifyJWT');
 const Appointment = require('../models/Appointment');
 
 // GET all appointments for logged-in user (protected)
@@ -16,8 +17,8 @@ router.get('/', authSession, async (req, res) => {
   }
 });
 
-// POST create appointment (protected)
-router.post('/', authSession, async (req, res) => {
+// POST create appointment (protected by JWT)
+router.post('/', verifyJWT, async (req, res) => {
   try {
     const { doctorId, doctorName, patientName, gender, phone, appointmentDate, appointmentTime } = req.body;
 
@@ -68,8 +69,8 @@ router.put('/:id', authSession, async (req, res) => {
   }
 });
 
-// DELETE appointment (protected)
-router.delete('/:id', authSession, async (req, res) => {
+// DELETE appointment (protected by JWT)
+router.delete('/:id', verifyJWT, async (req, res) => {
   try {
     const appointment = await Appointment.findOneAndDelete({ 
       _id: req.params.id, 

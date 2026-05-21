@@ -114,14 +114,14 @@ Express.js backend API for the **DocAppoint** doctor appointment booking platfor
 | `GET` | `/api/doctors/:id` | Get a single doctor by ID |
 | `POST` | `/api/doctors/seed` | Seed 6 demo doctors (blocked in production unless `ALLOW_DOCTOR_SEED=true`) |
 
-### Appointments — `/api/appointments` (Protected)
+### Appointments — `/api/appointments` (Protected via JWT & Session)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/appointments` | Get all appointments for the logged-in user |
-| `POST` | `/api/appointments` | Create a new appointment |
-| `PUT` | `/api/appointments/:id` | Update an appointment (read-only fields: `doctorName`, `userEmail`) |
-| `DELETE` | `/api/appointments/:id` | Delete an appointment |
+| `GET` | `/api/appointments` | Get all appointments for the logged-in user (Requires Session Cookie) |
+| `POST` | `/api/appointments` | Create a new appointment (Requires `Authorization: Bearer <JWT>`) |
+| `PUT` | `/api/appointments/:id` | Update an appointment (Requires Session Cookie) |
+| `DELETE` | `/api/appointments/:id` | Delete an appointment (Requires `Authorization: Bearer <JWT>`) |
 
 ### Reviews — `/api/reviews` (Mixed)
 
@@ -143,7 +143,8 @@ Better Auth owns all auth routes including sign-in, sign-up, session management,
 
 ## Security
 
-- **HTTP-only cookies** for session management
+- **HTTP-only cookies** for global session management
+- **Stateless JWT Authorization** for sensitive actions (creating/deleting appointments), verified natively via Better Auth JWKS
 - **Better Auth session validation** on all protected routes
 - **Rate limiting** — 50 requests per 15 minutes on auth endpoints
 - **Helmet.js** for security headers

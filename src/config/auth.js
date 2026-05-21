@@ -3,6 +3,8 @@ const { betterAuth } = require("better-auth");
 const { mongodbAdapter } = require("better-auth/adapters/mongodb");
 const buildAllowedOrigins = require("./allowedOrigins");
 
+const { jwt } = require("better-auth/plugins");
+
 const client = new MongoClient(process.env.MONGODB_URI);
 
 const db = client.db();
@@ -10,6 +12,9 @@ const isProduction = process.env.NODE_ENV?.trim() === "production";
 const trustedOrigins = buildAllowedOrigins();
 
 const auth = betterAuth({
+  plugins: [
+    jwt()
+  ],
   database: mongodbAdapter(db, {
     client,
   }),
